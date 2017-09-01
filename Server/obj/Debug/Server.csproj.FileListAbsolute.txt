@@ -1,0 +1,6 @@
+C:\Users\ukolo\Source\Repos\Diplom\Server\Server\bin\Debug\Server.exe.config
+C:\Users\ukolo\Source\Repos\Diplom\Server\Server\bin\Debug\Server.exe
+C:\Users\ukolo\Source\Repos\Diplom\Server\Server\bin\Debug\Server.pdb
+C:\Users\ukolo\Source\Repos\Diplom\Server\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\ukolo\Source\Repos\Diplom\Server\Server\obj\Debug\Server.exe
+C:\Users\ukolo\Source\Repos\Diplom\Server\Server\obj\Debug\Server.pdb
