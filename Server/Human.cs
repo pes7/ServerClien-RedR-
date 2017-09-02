@@ -10,14 +10,16 @@ namespace Server
     public class Human
     {
         public enum AccesProvider { Admin,Moder,User };
+        public int Id { get; set; }
         private string Name { get; set; }
         private string Surname { get; set; }
         private string Nick { get; set; }
         private bool IsNick { get; set; }
         public int Age { get; set; }
         AccesProvider UserAcces { get; set; }
-        public Human(string name, string surname, int age, string nick = null, bool isnick = false, AccesProvider permissions = AccesProvider.User)
+        public Human(string name, string surname, int age, string nick = null, bool isnick = false, AccesProvider permissions = AccesProvider.User, int id = 0)
         {
+            Id = id;
             Name = name;
             Surname = surname;
             Nick = nick;

@@ -17,46 +17,77 @@ namespace Client
         const string address = "127.0.0.1";
         public static Human Me;
         public static List<ServerRequest> Rq;
+        static TcpClient client = null;
 
         static void Main(string[] args)
         {
+            Registration();
+            Thread th = new Thread(CreateMain);
+            th.Start();
+        }
 
-            TcpClient client = null;
+        static private void CreateMain()
+        {
+            using (Client.Main mn = new Client.Main())
+            {
+                mn.ShowDialog();
+            }
+        }
 
+        static public bool Connect(Human me)
+        {
             try
             {
                 client = new TcpClient(address, port);
                 IFormatter ser = new BinaryFormatter();
                 NetworkStream stream = client.GetStream();
-                Registration();
-                while (true)
-                {
-                    Console.Write(Me.GetName() + ": ");
-                    string hk = Console.ReadLine();
 
-                    ServerRequest message = new ServerRequest($"message={hk}",Me);
-                    ser.Serialize(stream, message);
+                ServerRequest message = new ServerRequest(0, $"command=connect", me);
+                ser.Serialize(stream, message);
 
-                    Console.Clear();
-
-                    stream = client.GetStream();
-                    List<ServerRequest> Response = (List<ServerRequest>)ser.Deserialize(stream);
-                    foreach(ServerRequest sr in Response)
-                    {
-                        Console.WriteLine($"{sr.GetMessage()}");
-                    }
+                stream = client.GetStream();
+                string Response = (string)ser.Deserialize(stream);
+                if (Response == "Connected") {
+                    Me = me;
+                    Console.WriteLine("Connected.");
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return false;
             }
-            finally
+            return false;
+        }
+
+        static public void SendMessage(string message)
+        {
+            IFormatter ser = new BinaryFormatter();
+            NetworkStream stream = client.GetStream();
+
+            ServerRequest Message = new ServerRequest(0, $"message={message}", Me);
+            ser.Serialize(stream, Message);
+
+            stream = client.GetStream();
+            string Response = (string)ser.Deserialize(stream);
+            if (Response == "Done")
             {
-                if(client != null)
-                    client.Close();
+                Console.WriteLine($"Message [{message}] sent.");
             }
-            Console.ReadKey();
+        }
+
+        static public List<ServerRequest> GetMessages()
+        {
+            IFormatter ser = new BinaryFormatter();
+            NetworkStream stream = client.GetStream();
+
+            ServerRequest message = new ServerRequest(0, $"command=getmessages", Me);
+            ser.Serialize(stream, message);
+
+            stream = client.GetStream();
+            List<ServerRequest> Response = (List<ServerRequest>)ser.Deserialize(stream);
+            return Response;
         }
 
         static private void Menu()
@@ -68,7 +99,7 @@ namespace Client
         {
             IFormatter ser = new BinaryFormatter();
             NetworkStream stream = cl.GetStream();
-            ServerRequest message = new ServerRequest($"update=true");
+            ServerRequest message = new ServerRequest(0,$"update=true");
             ser.Serialize(stream, message);
 
             stream = cl.GetStream();
@@ -93,12 +124,25 @@ namespace Client
             Rq = Response;
         }
 
-        static private List<ServerRequest> GetComp(List<ServerRequest> rq1, List<ServerRequest> rq2)
+        static public ServerInfo getServerInfo()
+        {
+            IFormatter ser = new BinaryFormatter();
+            NetworkStream streamInf = client.GetStream();
+
+            ServerRequest message = new ServerRequest(0, $"command=getstatus");
+            ser.Serialize(streamInf, message);
+
+            streamInf = client.GetStream();
+            ServerInfo Response = (ServerInfo)ser.Deserialize(streamInf);
+            return Response;
+        }
+
+        static public List<ServerRequest>  GetComp(List<ServerRequest> rq1, List<ServerRequest> rq2)
         {
             List<ServerRequest> newRQ = new List<ServerRequest>();
             foreach(ServerRequest rq in rq1)
             {
-                if(rq2.Find(kek => kek.User == rq.User && kek.Request == rq.Request) == null)
+                if(rq2.Find(kek => kek.Id == rq.Id) == null)
                 {
                     newRQ.Add(rq);
                 }
@@ -177,6 +221,19 @@ else
         private void Login()
         {
 
+        }
+
+        public static bool IsSimillarHuman(List<Human> ls1, List<Human> ls2)
+        {
+            bool ist = true;
+            foreach(Human hm in ls1)
+            {
+                if(ls2.Find(kek=> kek != hm) == null)
+                {
+                    ist = false;
+                }
+            }
+            return ist;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Server
             client = tcpClient;
         }
 
-        public static Human User;
+        public Human User;
         public void Process()
         {
             NetworkStream stream = null;
@@ -28,15 +28,42 @@ namespace Server
                 {
                     IFormatter formatter = new BinaryFormatter();
                     ServerRequest Response = (ServerRequest)formatter.Deserialize(stream);
-                    if (Response.TypeRespons() != "update")
+                    switch (Response.TypeRespons())
                     {
-                        User = Response.User;
-                        Program.Messages.Add(Response);
-                        UpdateScreen();
+                        case "update":
 
-                        IsNewHuman(Response.User);
+                            break;
+                        case "system":
+                           
+                            break;
+                        case "command":
+                            switch (Response.GetMessage())
+                            {
+                                case "connect":
+                                    formatter.Serialize(stream, "Connected");
+                                    User = Response.User;
+                                    IsNewHuman(Response.User);
+                                    Program.Messages.Add(new ServerRequest(0, $"system={User.GetName()} присоединился."));
+                                    UpdateScreen();
+                                    break;
+                                case "getmessages":
+                                    formatter.Serialize(stream, Program.Messages);
+                                    break;
+                                case "getstatus":
+                                    Program.ServerInf.OnlineUsers = Program.UsersOnline;
+                                    formatter.Serialize(stream, Program.ServerInf);
+                                    break;
+                            }
+                            break;
+                        case "message":
+                            User = Response.User;
+                            Response.Id = Program.Messages.Count;
+                            Program.Messages.Add(Response);
+                            IsNewHuman(Response.User);
+                            UpdateScreen();
+                            formatter.Serialize(stream,"Done");
+                            break;
                     }
-                    formatter.Serialize(stream, Program.Messages);
                 }
             }
             catch (Exception ex)
@@ -44,14 +71,27 @@ namespace Server
                 switch (ex.HResult)
                 {
                     case -2146232800:
-                        Program.Messages.Add(new ServerRequest($"system={User.GetName()} покинул чат."));
-                        Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
+                        Program.Messages.Add(new ServerRequest(Program.Messages.Count, $"system={User.GetName()} покинул чат."));
+                        if (Program.UsersOnline.Count > 0)
+                        {
+                            Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
+                        }
                         UpdateScreen();
                         break;
                     default:
+                        Program.Messages.Add(new ServerRequest(Program.Messages.Count, $"system={User.GetName()} покинул чат."));
+                        if (Program.UsersOnline.Count > 0)
+                        {
+                            Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
+                        }
+                        UpdateScreen();
                         Console.WriteLine($"[{ex.HResult}] {ex.Message}");
                         break;
                 }
+                if (stream != null)
+                    stream.Close();
+                if (client != null)
+                    client.Close();
             }
             finally
             {
@@ -59,14 +99,14 @@ namespace Server
                     stream.Close();
                 if (client != null)
                     client.Close();
-                Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
-                UpdateScreen();
             }
         }
         private void IsNewHuman(Human hm)
         {
             if(Program.UsersOnline.Find(kek=>kek.GetName() == hm.GetName() && kek.Age == hm.Age) == null)
             {
+                hm.Id = Program.HmId;
+                Program.HmId++;
                 Program.UsersOnline.Add(hm);
             }
         }
@@ -74,6 +114,7 @@ namespace Server
         {
             Console.Clear();
             Console.WriteLine($"Online: {Program.UsersOnline.Count}");
+            Console.WriteLine($"Messages: {Program.Messages.Count}");
             Console.WriteLine("List: {");
             foreach(Human hm in Program.UsersOnline)
             {

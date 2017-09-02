@@ -9,9 +9,10 @@ namespace Server
     [Serializable]
     public class ServerRequest
     {
+        public int Id { get; set; }
         public Human User { get; set; }
         public string Request { get; set; }
-        public ServerRequest(string rq, Human hm = null)
+        public ServerRequest(int id, string rq, Human hm = null)
         {
             User = hm;
             Request = rq;
@@ -25,6 +26,8 @@ namespace Server
                     return $"{User.GetName()}: {str[1]}";
                 case "system":
                     return $"Сервер: {str[1]}";
+                case "command":
+                    return $"{str[1]}";
                 default:
                     return null;
             }

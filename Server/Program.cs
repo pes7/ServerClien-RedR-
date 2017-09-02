@@ -15,11 +15,15 @@ namespace Server
         static TcpListener listener;
         public static List<ServerRequest> Messages;
         public static List<Human> UsersOnline;
+        public static ServerInfo ServerInf;
+        public static int HmId = 0;
 
         static void Main(string[] args)
         {
             Messages = new List<ServerRequest>();
             UsersOnline = new List<Human>();
+            ServerInf = new ServerInfo("pes7's server");
+            ServerInf.Status = ServerInfo.ServerStatus.Running;
             try
             {
                 listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
