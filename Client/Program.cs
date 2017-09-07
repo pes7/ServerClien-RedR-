@@ -19,6 +19,8 @@ namespace Client
         public static List<ServerRequest> Rq;
         public static TcpClient client = null;
 
+        public static Client.Main MainF;
+
         static void Main(string[] args)
         {
             Registration();
@@ -28,10 +30,11 @@ namespace Client
 
         static private void CreateMain()
         {
-            using (Client.Main mn = new Client.Main())
+            using (MainF = new Client.Main())
             {
-                mn.ShowDialog();
+                MainF.ShowDialog();
             }
+            Console.ReadKey();
         }
 
         static private void Menu()
@@ -49,6 +52,7 @@ namespace Client
                 Console.WriteLine("Ошибка #1");
                 goto name;
             }
+            Console.Clear();
             surname:
             Console.Write("Введите фамилию: ");
             string surname = Console.ReadLine();
@@ -58,6 +62,7 @@ namespace Client
                 goto surname;
             }
             int i;
+            Console.Clear();
             nick:
             Console.WriteLine("Хотите использовать ник или имя и фамилию в чате? 1)Да 0)Нет");
             try
@@ -81,6 +86,7 @@ namespace Client
                 }
             }
             int ageA;
+            Console.Clear();
             age:
             Console.Write("Сколько вам лет: ");
             try
@@ -97,14 +103,47 @@ namespace Client
                 Console.WriteLine("Ошибка #5");
                 goto age;
             }
+            Console.Clear();
+            admin:
+            int j;
+            Console.Write("Вы админ? 1)Да 0)Нет : ");
+            try
+            {
+                j = int.Parse(Console.ReadLine());
+                if(j == 1)
+                {
+                    string pass;
+                    Console.Write("Пароль: ");
+                    pass = Console.ReadLine();
+                    if (pass == "8912")
+                    {
+                        if (i == 0)
+                        {
+                            Me = new Human(userName, surname, ageA, null, false, Human.AccesProvider.Admin);
+                        }
+                        else
+                        {
+                            Me = new Human(userName, surname, ageA, nick, true, Human.AccesProvider.Admin);
+                        }
+                        Console.Clear();
+                        return;
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Ошибка #6");
+                goto admin;
+            }
             if (i == 0)
             {
                 Me = new Human(userName, surname, ageA);
             }
-else
+            else
             {
                 Me = new Human(userName, surname, ageA, nick, true);
             }
+            Console.Clear();
         }
 
         private void Login()

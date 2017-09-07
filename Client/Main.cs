@@ -15,8 +15,9 @@ namespace Client
     {
         public List<ServerRequest> Old = null;
         public List<Human> OldH = null;
+        private Human Selected = null;
 
-        public int[,] Sizer = {{541,364},{781,364}/*Settings*/, {539, 487}/*Admin*/};
+        public int[,] Sizer = {{541,364},{781,364}/*Settings*/, {541, 487}/*Admin*/};
 
         private bool IsSettingsUI = false;
         private bool ISAdminUI = false;
@@ -24,13 +25,14 @@ namespace Client
         public Main()
         {
             InitializeComponent();
+            this.Size = new Size(541, 364);
             Old = new List<ServerRequest>();
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
             //new Server.Human("Nazar", "Ukolov", 18, "pes7", false, Server.Human.AccesProvider.Admin)
-            if (ServerFunc.Connect(Program.address,Program.port,Program.Me))
+            if (ServerFunc.Connect(Program.address,Program.port,Program.Me,Program.MainF))
                 timer1.Start();
         }
 
@@ -126,7 +128,7 @@ namespace Client
 
         private void label1_Click(object sender, EventArgs e)
         {
-            if (!IsSettingsUI)
+            if (!IsSettingsUI && Program.Me.UserAcces != Human.AccesProvider.User)
             {
                 int index = ISAdminUI ? 0 : 2;
                 ISAdminUI = ISAdminUI ? false : true;
@@ -136,7 +138,39 @@ namespace Client
 
         private void button4_Click(object sender, EventArgs e)
         {
+            if (!ISAdminUI)
+            {
+                int index = IsSettingsUI ? 0 : 1;
+                IsSettingsUI = IsSettingsUI ? false : true;
+                this.Size = new Size(Sizer[index, 0], Sizer[index, 1]);
+            }
+        }
 
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(Program.Me.UserAcces != Human.AccesProvider.User)
+            {
+                if(listBox2.SelectedIndex > -1 && listBox2.SelectedIndex < OldH.Count)
+                    UpdateUserInfoScreen(OldH[listBox2.SelectedIndex]);
+            }
+        }
+
+        private void UpdateUserInfoScreen(Human hm)
+        {
+            Selected = hm;
+            fio.Text = $"{hm.GetName()}";
+            acclevel.Text = $"Acces: {hm.UserAcces} lvl";
+            id.Text = $"Id: {hm.Id}";
+            age.Text = $"Age: {hm.Age}";
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if(Selected != null)
+            {
+                Console.WriteLine($"kick={Selected.Id}");
+                ServerFunc.SendCommand($"kick={Selected.Id}");
+            }
         }
     }
 }

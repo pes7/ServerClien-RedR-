@@ -32,6 +32,11 @@ namespace Server
                     return null;
             }
         }
+        public List<string> GetMessageList()
+        {
+            List<string> str = Request.Split('=').ToList();
+            return str;
+        }
         public string TypeRespons()
         {
             List<string> str = Request.Split('=').ToList();

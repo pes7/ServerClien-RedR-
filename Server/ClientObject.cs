@@ -51,7 +51,14 @@ namespace Server
                                     break;
                                 case "getstatus":
                                     Program.ServerInf.OnlineUsers = Program.UsersOnline;
+                                    Program.ServerInf.AdminCommands = Program.AdminCommands;
                                     formatter.Serialize(stream, Program.ServerInf);
+                                    break;
+                                case "kick":
+                                    Program.Messages.Add(new ServerRequest(0, $"system={Program.UsersOnline.Find(kek=>kek.Id==int.Parse(Response.GetMessageList()[2]))} был кикнут!"));
+                                    Program.AdminCommands.Add(new ServerRequest(Program.AdminCommands.Count, $"kick={Response.GetMessageList()[2]}"));
+                                    formatter.Serialize(stream, "Done");
+                                    UpdateScreen();
                                     break;
                             }
                             break;
@@ -71,21 +78,27 @@ namespace Server
                 switch (ex.HResult)
                 {
                     case -2146232800:
-                        Program.Messages.Add(new ServerRequest(Program.Messages.Count, $"system={User.GetName()} покинул чат."));
-                        if (Program.UsersOnline.Count > 0)
+                        if (User != null)
                         {
-                            Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
+                            Program.Messages.Add(new ServerRequest(Program.Messages.Count, $"system={User.GetName()} покинул чат."));
+                            if (Program.UsersOnline.Count > 0)
+                            {
+                                Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
+                            }
+                            UpdateScreen();
                         }
-                        UpdateScreen();
                         break;
                     default:
-                        Program.Messages.Add(new ServerRequest(Program.Messages.Count, $"system={User.GetName()} покинул чат."));
-                        if (Program.UsersOnline.Count > 0)
+                        if (User != null)
                         {
-                            Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
+                            Program.Messages.Add(new ServerRequest(Program.Messages.Count, $"system={User.GetName()} покинул чат."));
+                            if (Program.UsersOnline.Count > 0)
+                            {
+                                Program.UsersOnline.Remove(Program.UsersOnline.Find(kek => kek.GetName() == User.GetName() && kek.Age == User.Age));
+                            }
+                            UpdateScreen();
+                            Console.WriteLine($"[{ex.HResult}] {ex.Message}");
                         }
-                        UpdateScreen();
-                        Console.WriteLine($"[{ex.HResult}] {ex.Message}");
                         break;
                 }
                 if (stream != null)

@@ -18,10 +18,13 @@ namespace Server
         public static ServerInfo ServerInf;
         public static int HmId = 0;
 
+        public static List<ServerRequest> AdminCommands;
+
         static void Main(string[] args)
         {
             Messages = new List<ServerRequest>();
             UsersOnline = new List<Human>();
+            AdminCommands = new List<ServerRequest>();
             ServerInf = new ServerInfo("pes7's server");
             ServerInf.Status = ServerInfo.ServerStatus.Running;
             try

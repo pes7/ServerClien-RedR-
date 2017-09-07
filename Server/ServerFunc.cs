@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Server
 {
@@ -13,6 +14,7 @@ namespace Server
     {
         private static TcpClient client = null;
         public static Human Me = null;
+        private static Form fm = null;
         static private bool CanWork()
         {
             return client != null && Me != null ? true : false;
@@ -44,6 +46,10 @@ namespace Server
 
                 streamInf = client.GetStream();
                 ServerInfo Response = (ServerInfo)ser.Deserialize(streamInf);
+
+                if(Response.AdminCommands != null && Response.AdminCommands.Count > 0)
+                    DoCommands(Response.AdminCommands);
+
                 return Response;
             } else return null;
         }
@@ -63,10 +69,30 @@ namespace Server
                 {
                     Console.WriteLine($"Message [{message}] sent.");
                     return true;
-                } else return false;
+                }
+                else return false;
             } else return false;
         }
-        static public bool Connect(string address, int port,Human me)
+        static public bool SendCommand(string command)
+        {
+            if (CanWork())
+            {
+                IFormatter ser = new BinaryFormatter();
+                NetworkStream streamInf = client.GetStream();
+
+                ServerRequest message = new ServerRequest(0, $"command={command}");
+                ser.Serialize(streamInf, message);
+
+                streamInf = client.GetStream();
+                string Response = (string)ser.Deserialize(streamInf);
+                if (Response == "Done.")
+                    return true;
+                else
+                    return false;
+            }
+            else return false;
+        }
+        static public bool Connect(string address, int port,Human me,Form Fm)
         {
             try
             {
@@ -82,6 +108,7 @@ namespace Server
                 if (Response == "Connected")
                 {
                     Me = me;
+                    fm = Fm;
                     Console.WriteLine("Connected.");
                     return true;
                 }
@@ -92,6 +119,26 @@ namespace Server
                 return false;
             }
             return false;
+        }
+        static public void DoCommands(List<ServerRequest> commands)
+        {
+            foreach (ServerRequest rq in commands)
+            {
+                Console.WriteLine(int.Parse(rq.GetMessageList()[1])+"");
+                if (int.Parse(rq.GetMessageList()[1]) == Me.Id)
+                {
+                    switch (rq.GetMessageList()[0])
+                    {
+                        case "kick":
+                            client.Close();
+                            client = null;
+                            Me = null;
+                            fm.Close();
+                            Console.WriteLine("YOU HAD BEEN KICKED");
+                            break;
+                    }
+                }
+            }
         }
     }
 }
