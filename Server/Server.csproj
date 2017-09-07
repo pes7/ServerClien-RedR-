@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,8 +46,10 @@
   <ItemGroup>
     <Compile Include="ClientObject.cs" />
     <Compile Include="Human.cs" />
+    <Compile Include="MyLisboxItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerFunc.cs" />
     <Compile Include="ServerInfo.cs" />
     <Compile Include="ServerRequest.cs" />
   </ItemGroup>

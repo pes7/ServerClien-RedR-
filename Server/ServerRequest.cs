@@ -37,5 +37,17 @@ namespace Server
             List<string> str = Request.Split('=').ToList();
             return str[0];
         }
+        static public List<ServerRequest> GetComp(List<ServerRequest> rq1, List<ServerRequest> rq2)
+        {
+            List<ServerRequest> newRQ = new List<ServerRequest>();
+            foreach (ServerRequest rq in rq1)
+            {
+                if (rq2.Find(kek => kek.Id == rq.Id) == null)
+                {
+                    newRQ.Add(rq);
+                }
+            }
+            return newRQ;
+        }
     }
 }

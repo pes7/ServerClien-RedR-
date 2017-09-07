@@ -11,12 +11,12 @@ namespace Server
     {
         public enum AccesProvider { Admin,Moder,User };
         public int Id { get; set; }
-        private string Name { get; set; }
-        private string Surname { get; set; }
-        private string Nick { get; set; }
-        private bool IsNick { get; set; }
-        public int Age { get; set; }
-        AccesProvider UserAcces { get; set; }
+        private string Name { get; }
+        private string Surname { get; }
+        private string Nick { get; }
+        private bool IsNick { get; }
+        public int Age { get; }
+        public AccesProvider UserAcces { get; }
         public Human(string name, string surname, int age, string nick = null, bool isnick = false, AccesProvider permissions = AccesProvider.User, int id = 0)
         {
             Id = id;
@@ -30,6 +30,17 @@ namespace Server
         public string GetName()
         {
             return IsNick ? $"{Nick}" : $"{Name} {Surname}";
+        }
+        public static bool IsSimillarHuman(List<Human> ls1, List<Human> ls2)
+        {
+            foreach (Human hm in ls1)
+            {
+                if (ls2.Find(kek => kek != hm) == null)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
