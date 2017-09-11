@@ -11,13 +11,14 @@ namespace Server
     {
         public enum AccesProvider { Admin,Moder,User };
         public int Id { get; set; }
-        private string Name { get; }
-        private string Surname { get; }
-        private string Nick { get; }
-        private bool IsNick { get; }
+        public string Name { get; }
+        public string Surname { get; }
+        public string Nick { get; }
+        public bool IsNick { get; }
         public int Age { get; }
+        public int Folls { get; set; }
         public AccesProvider UserAcces { get; }
-        public Human(string name, string surname, int age, string nick = null, bool isnick = false, AccesProvider permissions = AccesProvider.User, int id = 0)
+        public Human(string name, string surname, int age, string nick = null, bool isnick = false, AccesProvider permissions = AccesProvider.User, int id = 0, int folls = 0)
         {
             Id = id;
             Name = name;
@@ -26,6 +27,7 @@ namespace Server
             IsNick = isnick;
             Age = age;
             UserAcces = permissions;
+            Folls = folls;
         }
         public string GetName()
         {
@@ -35,7 +37,7 @@ namespace Server
         {
             foreach (Human hm in ls1)
             {
-                if (ls2.Find(kek => kek != hm) == null)
+                if (ls2.Find(kek => kek.Id != hm.Id) == null)
                 {
                     return false;
                 }

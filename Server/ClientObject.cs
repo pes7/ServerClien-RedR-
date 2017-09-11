@@ -40,9 +40,9 @@ namespace Server
                             switch (Response.GetMessage())
                             {
                                 case "connect":
+                                    //User = Response.User;
                                     formatter.Serialize(stream, "Connected");
-                                    User = Response.User;
-                                    IsNewHuman(Response.User);
+                                    User = IsNewHuman(Response.User);
                                     Program.Messages.Add(new ServerRequest(0, $"system={User.GetName()} присоединился."));
                                     UpdateScreen();
                                     break;
@@ -55,10 +55,13 @@ namespace Server
                                     formatter.Serialize(stream, Program.ServerInf);
                                     break;
                                 case "kick":
-                                    Program.Messages.Add(new ServerRequest(0, $"system={Program.UsersOnline.Find(kek=>kek.Id==int.Parse(Response.GetMessageList()[2]))} был кикнут!"));
+                                    Program.Messages.Add(new ServerRequest(0, $"system={Program.UsersOnline.Find(kek=>kek.Id==int.Parse(Response.GetMessageList()[2])).GetName()} был кикнут!"));
                                     Program.AdminCommands.Add(new ServerRequest(Program.AdminCommands.Count, $"kick={Response.GetMessageList()[2]}"));
                                     formatter.Serialize(stream, "Done");
                                     UpdateScreen();
+                                    break;
+                                case "getme":
+                                    formatter.Serialize(stream,User);
                                     break;
                             }
                             break;
@@ -114,14 +117,16 @@ namespace Server
                     client.Close();
             }
         }
-        private void IsNewHuman(Human hm)
+        private Human IsNewHuman(Human hm)
         {
-            if(Program.UsersOnline.Find(kek=>kek.GetName() == hm.GetName() && kek.Age == hm.Age) == null)
+            if (Program.UsersOnline.Find(kek => kek.GetName() == hm.GetName() && kek.Age == hm.Age) == null)
             {
                 hm.Id = Program.HmId;
                 Program.HmId++;
                 Program.UsersOnline.Add(hm);
+                return hm;
             }
+            else return null;
         }
         private void UpdateScreen()
         {

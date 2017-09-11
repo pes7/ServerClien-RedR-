@@ -44,14 +44,14 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.SAge = new System.Windows.Forms.TextBox();
+            this.SRNickBool = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.SNick = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.SSurname = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.SName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -60,12 +60,12 @@
             this.button11 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.id = new System.Windows.Forms.Label();
             this.folscount = new System.Windows.Forms.Label();
             this.acclevel = new System.Windows.Forms.Label();
-            this.age = new System.Windows.Forms.Label();
             this.messcount = new System.Windows.Forms.Label();
+            this.age = new System.Windows.Forms.Label();
             this.fio = new System.Windows.Forms.Label();
+            this.id = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
@@ -93,6 +93,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(323, 20);
             this.textBox1.TabIndex = 1;
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // listBox1
             // 
@@ -158,14 +159,14 @@
             this.panel1.Controls.Add(this.textBox6);
             this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.textBox5);
-            this.panel1.Controls.Add(this.radioButton1);
+            this.panel1.Controls.Add(this.SAge);
+            this.panel1.Controls.Add(this.SRNickBool);
             this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.textBox4);
+            this.panel1.Controls.Add(this.SNick);
             this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.textBox3);
+            this.panel1.Controls.Add(this.SSurname);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.textBox2);
+            this.panel1.Controls.Add(this.SName);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(535, 12);
             this.panel1.Name = "panel1";
@@ -229,26 +230,27 @@
             this.label6.TabIndex = 9;
             this.label6.Text = "Лет:";
             // 
-            // textBox5
+            // SAge
             // 
-            this.textBox5.Enabled = false;
-            this.textBox5.Location = new System.Drawing.Point(53, 133);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(167, 20);
-            this.textBox5.TabIndex = 8;
-            this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.SAge.Enabled = false;
+            this.SAge.Location = new System.Drawing.Point(53, 133);
+            this.SAge.Name = "SAge";
+            this.SAge.Size = new System.Drawing.Size(167, 20);
+            this.SAge.TabIndex = 8;
+            this.SAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // radioButton1
+            // SRNickBool
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.radioButton1.Location = new System.Drawing.Point(10, 105);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(210, 22);
-            this.radioButton1.TabIndex = 7;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Использовать ник в чате?";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.SRNickBool.AutoSize = true;
+            this.SRNickBool.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SRNickBool.Location = new System.Drawing.Point(10, 105);
+            this.SRNickBool.Name = "SRNickBool";
+            this.SRNickBool.Size = new System.Drawing.Size(210, 22);
+            this.SRNickBool.TabIndex = 7;
+            this.SRNickBool.TabStop = true;
+            this.SRNickBool.Text = "Использовать ник в чате?";
+            this.SRNickBool.UseVisualStyleBackColor = true;
+            this.SRNickBool.CheckedChanged += new System.EventHandler(this.SRNickBool_CheckedChanged);
             // 
             // label5
             // 
@@ -261,14 +263,14 @@
             this.label5.TabIndex = 6;
             this.label5.Text = "Ник:";
             // 
-            // textBox4
+            // SNick
             // 
-            this.textBox4.Enabled = false;
-            this.textBox4.Location = new System.Drawing.Point(53, 79);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(167, 20);
-            this.textBox4.TabIndex = 5;
-            this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.SNick.Enabled = false;
+            this.SNick.Location = new System.Drawing.Point(53, 79);
+            this.SNick.Name = "SNick";
+            this.SNick.Size = new System.Drawing.Size(167, 20);
+            this.SNick.TabIndex = 5;
+            this.SNick.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label4
             // 
@@ -280,13 +282,13 @@
             this.label4.TabIndex = 4;
             this.label4.Text = "Фамилия:";
             // 
-            // textBox3
+            // SSurname
             // 
-            this.textBox3.Location = new System.Drawing.Point(94, 53);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(126, 20);
-            this.textBox3.TabIndex = 3;
-            this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.SSurname.Location = new System.Drawing.Point(94, 53);
+            this.SSurname.Name = "SSurname";
+            this.SSurname.Size = new System.Drawing.Size(126, 20);
+            this.SSurname.TabIndex = 3;
+            this.SSurname.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label3
             // 
@@ -298,13 +300,13 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "Имя:";
             // 
-            // textBox2
+            // SName
             // 
-            this.textBox2.Location = new System.Drawing.Point(53, 27);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(167, 20);
-            this.textBox2.TabIndex = 1;
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.SName.Location = new System.Drawing.Point(53, 27);
+            this.SName.Name = "SName";
+            this.SName.Size = new System.Drawing.Size(167, 20);
+            this.SName.TabIndex = 1;
+            this.SName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
             // 
@@ -380,26 +382,17 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.fio);
-            this.panel3.Controls.Add(this.id);
             this.panel3.Controls.Add(this.folscount);
             this.panel3.Controls.Add(this.acclevel);
-            this.panel3.Controls.Add(this.age);
             this.panel3.Controls.Add(this.messcount);
+            this.panel3.Controls.Add(this.age);
+            this.panel3.Controls.Add(this.fio);
+            this.panel3.Controls.Add(this.id);
             this.panel3.Controls.Add(this.label10);
             this.panel3.Location = new System.Drawing.Point(317, 0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(191, 118);
             this.panel3.TabIndex = 5;
-            // 
-            // id
-            // 
-            this.id.AutoSize = true;
-            this.id.Location = new System.Drawing.Point(4, 32);
-            this.id.Name = "id";
-            this.id.Size = new System.Drawing.Size(22, 13);
-            this.id.TabIndex = 6;
-            this.id.Text = "Id: ";
             // 
             // folscount
             // 
@@ -419,15 +412,6 @@
             this.acclevel.TabIndex = 4;
             this.acclevel.Text = "AccesLevel:";
             // 
-            // age
-            // 
-            this.age.AutoSize = true;
-            this.age.Location = new System.Drawing.Point(4, 57);
-            this.age.Name = "age";
-            this.age.Size = new System.Drawing.Size(26, 13);
-            this.age.TabIndex = 3;
-            this.age.Text = "Age";
-            // 
             // messcount
             // 
             this.messcount.AutoSize = true;
@@ -437,6 +421,15 @@
             this.messcount.TabIndex = 2;
             this.messcount.Text = "Messages Count:";
             // 
+            // age
+            // 
+            this.age.AutoSize = true;
+            this.age.Location = new System.Drawing.Point(4, 57);
+            this.age.Name = "age";
+            this.age.Size = new System.Drawing.Size(26, 13);
+            this.age.TabIndex = 3;
+            this.age.Text = "Age";
+            // 
             // fio
             // 
             this.fio.AutoSize = true;
@@ -445,6 +438,15 @@
             this.fio.Size = new System.Drawing.Size(24, 13);
             this.fio.TabIndex = 1;
             this.fio.Text = "FIO";
+            // 
+            // id
+            // 
+            this.id.AutoSize = true;
+            this.id.Location = new System.Drawing.Point(4, 32);
+            this.id.Name = "id";
+            this.id.Size = new System.Drawing.Size(22, 13);
+            this.id.TabIndex = 6;
+            this.id.Text = "Id: ";
             // 
             // label10
             // 
@@ -507,7 +509,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(797, 482);
+            this.ClientSize = new System.Drawing.Size(767, 450);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.panel1);
@@ -550,14 +552,14 @@
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.TextBox SAge;
+        private System.Windows.Forms.RadioButton SRNickBool;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox SNick;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox SSurname;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox SName;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panel2;

@@ -53,6 +53,7 @@
     <Compile Include="ServerFunc.cs" />
     <Compile Include="ServerInfo.cs" />
     <Compile Include="ServerRequest.cs" />
+    <Compile Include="XmlModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

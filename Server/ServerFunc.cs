@@ -18,19 +18,23 @@ namespace Server
         static private bool CanWork()
         {
             return client != null && Me != null ? true : false;
+
+        }
+        public static NetworkStream NetStream; // Небезопасная переменная, поскольку она может быть перезаписана с множества функций, лучше сделать List<>
+        static public IFormatter Send(TcpClient client, ServerRequest rq)
+        {
+            IFormatter ser = new BinaryFormatter();
+            NetStream = client.GetStream();
+            ser.Serialize(NetStream, rq);
+            NetStream = client.GetStream();
+            return ser;
         }
         static public List<ServerRequest> GetMessages()
         {
             if (CanWork())
             {
-                IFormatter ser = new BinaryFormatter();
-                NetworkStream stream = client.GetStream();
-
                 ServerRequest message = new ServerRequest(0, $"command=getmessages", Me);
-                ser.Serialize(stream, message);
-
-                stream = client.GetStream();
-                List<ServerRequest> Response = (List<ServerRequest>)ser.Deserialize(stream);
+                List<ServerRequest> Response = (List<ServerRequest>)Send(client, message).Deserialize(NetStream);
                 return Response;
             } else return null;
         }
@@ -38,33 +42,20 @@ namespace Server
         {
             if (CanWork())
             {
-                IFormatter ser = new BinaryFormatter();
-                NetworkStream streamInf = client.GetStream();
-
                 ServerRequest message = new ServerRequest(0, $"command=getstatus");
-                ser.Serialize(streamInf, message);
-
-                streamInf = client.GetStream();
-                ServerInfo Response = (ServerInfo)ser.Deserialize(streamInf);
-
-                if(Response.AdminCommands != null && Response.AdminCommands.Count > 0)
+                ServerInfo Response = (ServerInfo)Send(client, message).Deserialize(NetStream);
+                if (Response.AdminCommands != null && Response.AdminCommands.Count > 0)
                     DoCommands(Response.AdminCommands);
 
                 return Response;
             } else return null;
         }
-        static public bool SendMessage(string message)
+        static public bool SendMessage(string Message)
         {
             if (CanWork())
             {
-                IFormatter ser = new BinaryFormatter();
-                NetworkStream stream = client.GetStream();
-
-                ServerRequest Message = new ServerRequest(0, $"message={message}", Me);
-                ser.Serialize(stream, Message);
-
-                stream = client.GetStream();
-                string Response = (string)ser.Deserialize(stream);
+                ServerRequest message = new ServerRequest(0, $"message={Message}", Me);
+                string Response = (string)Send(client, message).Deserialize(NetStream);
                 if (Response == "Done")
                 {
                     Console.WriteLine($"Message [{message}] sent.");
@@ -77,14 +68,8 @@ namespace Server
         {
             if (CanWork())
             {
-                IFormatter ser = new BinaryFormatter();
-                NetworkStream streamInf = client.GetStream();
-
                 ServerRequest message = new ServerRequest(0, $"command={command}");
-                ser.Serialize(streamInf, message);
-
-                streamInf = client.GetStream();
-                string Response = (string)ser.Deserialize(streamInf);
+                string Response = (string)Send(client, message).Deserialize(NetStream);
                 if (Response == "Done.")
                     return true;
                 else
@@ -97,14 +82,8 @@ namespace Server
             try
             {
                 client = new TcpClient(address, port);
-                IFormatter ser = new BinaryFormatter();
-                NetworkStream stream = client.GetStream();
-
                 ServerRequest message = new ServerRequest(0, $"command=connect", me);
-                ser.Serialize(stream, message);
-
-                stream = client.GetStream();
-                string Response = (string)ser.Deserialize(stream);
+                string Response = (string)Send(client, message).Deserialize(NetStream);
                 if (Response == "Connected")
                 {
                     Me = me;
@@ -124,7 +103,6 @@ namespace Server
         {
             foreach (ServerRequest rq in commands)
             {
-                Console.WriteLine(int.Parse(rq.GetMessageList()[1])+"");
                 if (int.Parse(rq.GetMessageList()[1]) == Me.Id)
                 {
                     switch (rq.GetMessageList()[0])
@@ -139,6 +117,21 @@ namespace Server
                     }
                 }
             }
+        }
+        static public Human GetMyInf()
+        {
+            if (CanWork())
+            {
+                ServerRequest message = new ServerRequest(0, $"command=getme");
+                Human Response = (Human)Send(client,message).Deserialize(NetStream);
+                if (Response != null)
+                {
+                    Me = Response;
+                    return Response;
+                }
+                else return null;
+            }
+            else return null;
         }
     }
 }

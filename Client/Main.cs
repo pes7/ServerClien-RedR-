@@ -32,8 +32,21 @@ namespace Client
         private void Main_Load(object sender, EventArgs e)
         {
             //new Server.Human("Nazar", "Ukolov", 18, "pes7", false, Server.Human.AccesProvider.Admin)
-            if (ServerFunc.Connect(Program.address,Program.port,Program.Me,Program.MainF))
+            if (ServerFunc.Connect(Program.address, Program.port, Program.Me, Program.MainF))
+            {
+                Program.Me = ServerFunc.GetMyInf();
+                UpdateSettingInterface(Program.Me);
                 timer1.Start();
+            }
+        }
+
+        private void UpdateSettingInterface(Human hm)
+        {
+            SName.Text = hm.Name;
+            SSurname.Text = hm.Surname;
+            SNick.Text = hm.Nick;
+            SAge.Text = $"{hm.Age}";
+            SRNickBool.Checked = hm.IsNick;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -52,7 +65,7 @@ namespace Client
         {
             ServerInfo SerInf = ServerFunc.getServerInfo();
             label1.Text = $"Online:{SerInf.OnlineUsers.Count}";
-            this.Text = $"[{Program.Me.GetName()}] Server name: {SerInf.Name}";
+            this.Text = $"{Program.Me.GetName()}[{Program.Me.Id}] Server name: {SerInf.Name}";
             if (OldH != null) {
                 if (Human.IsSimillarHuman(SerInf.OnlineUsers, OldH))
                 {
@@ -171,6 +184,20 @@ namespace Client
                 Console.WriteLine($"kick={Selected.Id}");
                 ServerFunc.SendCommand($"kick={Selected.Id}");
             }
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                ServerFunc.SendMessage(textBox1.Text);
+                textBox1.Text = "";
+            }
+        }
+
+        private void SRNickBool_CheckedChanged(object sender, EventArgs e)
+        {
+            SNick.Enabled = SRNickBool.Checked;
         }
     }
 }
